@@ -40,47 +40,40 @@ foreach (@original) {
       push(@firstrow, 'ok');
       push(@firstrow, $firstrow[2]);
     }
-    else {
-      push(@firstrow, 'oknATCG', $firstrow[2]);
-  }}
-  elsif (($firstrow[2] eq 'A') and ($firstrow[3] eq 'N')) {
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[2]);
+    elsif ($firstrow[2] eq 'N'){
+      push(@firstrow, 'miss2', $firstrow[2]);
+    }
+    else {push(@firstrow, 'okhet', $firstrow[2]);
+    }
   }
-  elsif (($firstrow[2] eq 'T') and ($firstrow[3] eq 'N')) {
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[2]);
+  elsif($firstrow[2] eq 'N') {
+    if(($firstrow[3] eq 'T')||($firstrow[3] eq 'A')||($firstrow[3] eq 'C')||($firstrow[3] eq 'G')){
+      push (@firstrow, 'miss', $firstrow[3]);
+    }
+    elsif(($firstrow[3] eq 'R')||($firstrow[3] eq 'Y')||($firstrow[3] eq 'S')||($firstrow[3] eq 'W')||($firstrow[3] eq 'M')||($firstrow[3] eq 'K')){
+      push(@firstrow, 'missh', $firstrow[3]);
+    }
+    else{push(@firstrow, 'cerr', '?NA');
+       }
   }
-  elsif (($firstrow[2] eq 'C') and ($firstrow[3] eq 'N')) {
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[2]);
+  elsif($firstrow[3] eq 'N') {
+    if(($firstrow[2] eq 'T')||($firstrow[2] eq 'A')||($firstrow[2] eq 'C')||($firstrow[2] eq 'G')){
+      push (@firstrow, 'miss', $firstrow[2]);
+    }
+    elsif(($firstrow[2] eq 'R')||($firstrow[2] eq 'Y')||($firstrow[2] eq 'S')||($firstrow[2] eq 'W')||($firstrow[2] eq 'M')||($firstrow[2] eq 'K')){
+      push(@firstrow, 'missh', $firstrow[2]);
+    }
+    else{push(@firstrow, 'cerr', '?NA');
+       }
   }
-  elsif (($firstrow[2] eq 'G') and ($firstrow[3] eq 'N')) {
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[2]);
+  elsif(($firstrow[2] eq 'R')||($firstrow[2] eq 'Y')||($firstrow[2] eq 'S')||($firstrow[2] eq 'W')||($firstrow[2] eq 'M')||($firstrow[2] eq 'K')||($firstrow[3] eq 'R')||($firstrow[3] eq 'Y')||($firstrow[3] eq 'S')||($firstrow[3] eq 'W')||($firstrow[3] eq 'M')||($firstrow[3] eq 'K')){
+    push(@firstrow, 'errh', 'NA');
   }
-  elsif (($firstrow[2] eq 'N') and ($firstrow[3] eq 'A'))	{
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[3]);
-  }
-  elsif (($firstrow[2] eq 'N') and ($firstrow[3] eq 'T'))	{
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[3]);
-  }
-  elsif (($firstrow[2] eq 'N') and ($firstrow[3] eq 'C'))	{
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[3]);
-  }
-  elsif (($firstrow[2] eq 'N') and ($firstrow[3] eq 'G'))	{
-    push(@firstrow, 'miss');
-    push(@firstrow, $firstrow[3]);
-  }
-  else {
-    push(@firstrow, 'err','NA');
-  }
+  else{push(@firstrow, 'err', 'NA');
+     }
   my $SNP = join("\t", @firstrow);
   push(@output, $SNP);
-      }
+}
 ## Debuger
 #print "@output\n";
 ## add headers to output array
@@ -95,3 +88,35 @@ foreach (@output) {
 	print FILE "$_\n";
 }
 close FILE;
+## count class ocurrences
+my @class;
+foreach (@output){
+  my @outrow = split("\t", $_);
+  push(@class, $outrow[4]);
+}
+shift (@class);
+my $class2 = join("\t", @class);
+## Debugger
+#print $class2 . "\n";
+## End debugger
+print "_______________________________________________________\n" . "Counts by Class\n";
+my $okcount = () = $class2 =~ /\bok\b/g;
+print "ok\t" . $okcount . "\n";
+my $okhet = () = $class2 =~ /\bokhet\b/g;
+print "okhet\t" . $okhet . "\n";
+my $miss = ()= $class2 =~ /\bmiss\b/g;
+print "miss\t" . $miss . "\n";
+my $missh = () = $class2 =~ /\bmissh\b/g;
+print "missh\t" . $missh . "\n";
+my $err = () = $class2 =~ /\berr\b/g;
+print "err\t" . $err . "\n";
+my $errh = ()= $class2 =~ /\berrh\b/g;
+print "errh\t" . $errh . "\n";
+my $miss2 =()= $class2 =~ /\bmiss2\b/g;
+print "miss2\t" . $miss2 . "\n";
+my $cerr =()= $class2 =~ /\bcerr\b/g;
+print "cerr\t" . $cerr . "\n";
+## Debugger
+#foreach (@ok){
+#  print "$_\n";
+#}
