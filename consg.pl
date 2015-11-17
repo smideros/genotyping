@@ -79,16 +79,16 @@ foreach (@original) {
 ## add headers to output array
 unshift(@output, $head);
 ## create screen output
-foreach (@output){
-  print "$_\n";
-}
+#foreach (@output){
+#  print "$_\n";
+#}
 ## create the output file and print each of the rows from the output array
 open (FILE, ">consg.out");
 foreach (@output) {
 	print FILE "$_\n";
 }
 close FILE;
-## count class ocurrences
+## Count class ocurrences and output to screen
 my @class;
 foreach (@output){
   my @outrow = split("\t", $_);
@@ -99,7 +99,7 @@ my $class2 = join("\t", @class);
 ## Debugger
 #print $class2 . "\n";
 ## End debugger
-print "_______________________________________________________\n" . "Counts by Class\n";
+print "Counts by Class for $ARGV[0]\n";
 my $okcount = () = $class2 =~ /\bok\b/g;
 print "ok\t" . $okcount . "\n";
 my $okhet = () = $class2 =~ /\bokhet\b/g;
