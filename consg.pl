@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 use strict;
 use warnings;
 use Data::Dumper;
@@ -11,9 +10,8 @@ use Data::Dumper;
 # Keeps all that are identical AA, TT, CC, GG
 # Valid genotypes in one sample that are missing in the other are kept
 # eg. AN is changed to A and NG is changed to G
-# output into a tab delimited unix file named consg.out:
+# output into a tab delimited unix file named <inputfile>.out:
 # rs chrom sample1 sample2 CG
-# warning: will replace another consg.out file in the folder
 
 ## Verify and process the source file
 if ($#ARGV<0) {
@@ -83,7 +81,7 @@ unshift(@output, $head);
 #  print "$_\n";
 #}
 ## create the output file and print each of the rows from the output array
-open (FILE, ">consg.out");
+open (FILE, ">$ARGV[0].out");
 foreach (@output) {
 	print FILE "$_\n";
 }
@@ -96,27 +94,20 @@ foreach (@output){
 }
 shift (@class);
 my $class2 = join("\t", @class);
-## Debugger
-#print $class2 . "\n";
-## End debugger
-print "Counts by Class for $ARGV[0]\n";
 my $okcount = () = $class2 =~ /\bok\b/g;
-print "ok\t" . $okcount . "\n";
-my $okhet = () = $class2 =~ /\bokhet\b/g;
-print "okhet\t" . $okhet . "\n";
-my $miss = ()= $class2 =~ /\bmiss\b/g;
-print "miss\t" . $miss . "\n";
-my $missh = () = $class2 =~ /\bmissh\b/g;
-print "missh\t" . $missh . "\n";
-my $err = () = $class2 =~ /\berr\b/g;
-print "err\t" . $err . "\n";
-my $errh = ()= $class2 =~ /\berrh\b/g;
-print "errh\t" . $errh . "\n";
 my $miss2 =()= $class2 =~ /\bmiss2\b/g;
-print "miss2\t" . $miss2 . "\n";
+my $okhet = () = $class2 =~ /\bokhet\b/g;
+my $miss = ()= $class2 =~ /\bmiss\b/g;
+my $missh = () = $class2 =~ /\bmissh\b/g;
+my $err = () = $class2 =~ /\berr\b/g;
+my $errh = ()= $class2 =~ /\berrh\b/g;
 my $cerr =()= $class2 =~ /\bcerr\b/g;
+print "Counts by Class for $ARGV[0]\n";
+print "ok\t" . $okcount . "\n";
+print "miss2\t" . $miss2 . "\n";
+print "okhet\t" . $okhet . "\n";
+print "miss\t" . $miss . "\n";
+print "missh\t" . $missh . "\n";
 print "cerr\t" . $cerr . "\n";
-## Debugger
-#foreach (@ok){
-#  print "$_\n";
-#}
+print "errh\t" . $errh . "\n";
+print "err\t" . $err . "\n";
