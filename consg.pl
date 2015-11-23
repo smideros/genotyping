@@ -65,9 +65,9 @@ foreach (@original) {
        }
   }
   elsif(($firstrow[2] eq 'R')||($firstrow[2] eq 'Y')||($firstrow[2] eq 'S')||($firstrow[2] eq 'W')||($firstrow[2] eq 'M')||($firstrow[2] eq 'K')||($firstrow[3] eq 'R')||($firstrow[3] eq 'Y')||($firstrow[3] eq 'S')||($firstrow[3] eq 'W')||($firstrow[3] eq 'M')||($firstrow[3] eq 'K')){
-    push(@firstrow, 'errh', 'NA');
+    push(@firstrow, 'errh', 'N');
   }
-  else{push(@firstrow, 'err', 'NA');
+  else{push(@firstrow, 'err', 'N');
      }
   my $SNP = join("\t", @firstrow);
   push(@output, $SNP);
