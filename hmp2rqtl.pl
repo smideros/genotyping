@@ -5,13 +5,10 @@ use Data::Dumper;
 
 # USE: from a UNIX terminal:
 # perl hmp2rqtl.pl sourcefile
-# source file headers: rs chrom sample1 sample2
-# Creates a consensus genotype column CG (for consensus genotype) from two genotypes.
-# Keeps all that are identical AA, TT, CC, GG
-# Valid genotypes in one sample that are missing in the other are kept
-# eg. AN is changed to A and NG is changed to G
-# output into a tab delimited unix file named <inputfile>.out:
-# rs chrom sample1 sample2 CG
+# input tassel hapmap file
+# output r/qtl read.cross csvr file
+# unknown parents are changed to -, but keeps data if only one unknow parent.
+# parents hard coded on columns 206 and 205. Ny001 is A
 
 ## Verify and process the source file
 if ($#ARGV<0) {
@@ -26,8 +23,10 @@ chomp(@original);
 ## Remove and process the header line
 my $header = shift(@original);
 my @headings = split("\t", $header);
-#push(@headings, "class","CG");
-#my $head = join("\t", @headings);
+splice @headings, 0, 11;
+unshift (@headings,'id','');
+my $id = join (",",@headings);
+
 ## Create a newrow for each marker and compare to parental genotypes
 my @output;
 foreach (@original) {
@@ -35,16 +34,34 @@ foreach (@original) {
   my @newrow;
   push(@newrow, $row[0],$row[2]);
   splice @row, 0, 11;
-  print scalar(@row)."\t"."$row[205]"."\t"."$row[204]\n";
+  #print scalar(@row)."\t"."$row[205]"."\t"."$row[204]\n";
   foreach my $element (@row){
-    #print $element."$row[205]\n";
-    if ($element eq $row[205]){
+    if (($row[205] eq 'N')&&($row[204]eq'N')){
+      push(@newrow,'-');
+    }elsif($row[205]eq'N'){
+      if($element eq $row[204]){
+	push(@newrow,'B');
+      } elsif($element ne 'N'){
+	push(@newrow,'A');
+      } else {
+	push(@newrow,'-');
+      }
+    }elsif($row[204]eq'N'){
+      if($element eq $row[205]){
+	push(@newrow,'A');
+      } elsif($element ne 'N'){
+	push(@newrow,'B');
+      } else {
+	push(@newrow,'-');
+      }
+    }
+    elsif ($element eq $row[205]){
       push(@newrow, 'A');
     }
     elsif ($element eq $row[204]){
       push(@newrow, 'B');
-    }
-    else {push(@newrow,'-');
+    } else {
+      push(@newrow,'-');
     }
   }
   my $marker = join(",",@newrow);
@@ -55,12 +72,14 @@ foreach (@original) {
 ## add headers to output array
 #unshift(@output, $head);
 ## create screen output
-foreach (@output){
-  print "$_\n";
-}
-## create the output file and print each of the rows from the output array
-#open (FILE, ">$ARGV[0].out");
-#foreach (@output) {
-#	print FILE "$_\n";
+#print "$id\n";
+#foreach (@output){
+#  print "$_\n";
 #}
-#close FILE;
+## create the output file and print each of the rows from the output array
+open (FILE, ">$ARGV[0].csv");
+print FILE "$id\n";
+foreach (@output) {
+	print FILE "$_\n";
+}
+close FILE;
