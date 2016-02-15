@@ -23,3 +23,6 @@ plotGeno(setogenmap2, chr=19, ind=toperr$id[toperr$chr==19],cutoff = 3, include.
 z<-plot.info(setogenmap2, method=c("both"),col=c("blue", "red"), 
           ylab="Proportion Missing", main="")
 hist(nmissing(setogenmap2, what="mar"), breaks=50, xlim=c(0,200), xlab="No. missing genotypes", ylim = c(0,20), main="")
+
+## By LG
+plot.map(setogenmap2, chr=c(1:4), show.marker.names = T)
