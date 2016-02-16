@@ -1,4 +1,7 @@
-
+## BLUPS2016.R ##
+# 16 Feb 2016
+# Santiago Mideros
+# Calculates BLUEs from CLCs data set
 
 setwd("~/workdir")
 library(lme4)
