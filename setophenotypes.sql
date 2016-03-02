@@ -38,7 +38,7 @@ where trait = 'dla814'
 order by plot
 into outfile '~/workdir/dla814.txt'
 ;
-select isolate, subset, block, plot, genotype, phenotype
+select isolate, subset, block, plot, plant, genotype, phenotype
 from phenotype
 where trait = 'ip'
 order by plot
