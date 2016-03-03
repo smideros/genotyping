@@ -71,9 +71,14 @@ dla.c
 ## Compute Differences
 ##################################################################
 ip.mean.c$phenotype <- ip.mean.c$DK - ip.mean.c$S
-hist(ip.mean.c$phenotype, col="gold")
+layout(matrix(c(1,2,3,3), 2, 2, byrow = TRUE))
+hist(ip.mean.c$DK, main = "DK")
+hist(ip.mean.c$S, main = "S")
+hist(ip.mean.c$phenotype, col="gold", main= "IP DK - S")
 dla.c$phenotype <- dla.c$S - dla.c$DK
-hist(dla.c$phenotype, col="gold")
+hist(dla.c$DK, main = "DK")
+hist(dla.c$S, main = "S")
+hist(dla.c$phenotype, col="gold", main = "DLA S - DK")
 ## Save Output
 ##################################################################
 write.csv(ip.mean.c, file="dip.csv")
