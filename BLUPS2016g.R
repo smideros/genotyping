@@ -6,12 +6,13 @@
 setwd("~/workdir")
 library(lme4)
 
-raw.data = read.table("ip.txt",
+#raw.data = read.table("sp.csv",
 #                      col.names=c("isolate", "subset", "block", "plot", "phenotype")) #mel
-col.names=c("isolate", "subset", "block", "plot", "plant","genotype", "phenotype")) #ip
+#col.names=c("isolate", "subset", "block", "plot", "plant","genotype", "phenotype")) #ip
 #col.names=c("isolate", "subset", "block", "dpi", "plate","plot", "phenotype")) #diam
 #col.names=c("isolate", "subset", "block", "plot", "rep","counts", "phenotype")) #sp
 
+raw.data = read.csv("ddla.csv") #dip, ddla
 
 # genotype to include:
 raw.data <- subset(raw.data, genotype == "DK")
@@ -38,6 +39,7 @@ raw.data$rep<- as.factor(raw.data$rep)
 raw.data$counts<- as.factor(raw.data$counts)
 
 raw.data<-raw.data[order(raw.data$subset, raw.data$block, raw.data$plot),]
+raw.data<-raw.data[order(raw.data$subset, raw.data$block),]
 head(raw.data,20)
 
 summary(raw.data)
@@ -87,8 +89,8 @@ BIC(raw.data.lm.b, raw.data.lm.s)
 ## Now make it into a mixed model
 raw.data.nona<-raw.data[complete.cases(raw.data$phenotype),]
 raw.datavarcomp = lmer(raw.data.nona$phenotype ~ raw.data.nona$isolate + 
-#                         (1|raw.data.nona$subset))# abun, diam, mel, sp 
-                          (1|raw.data.nona$block))# ip, dla
+#                         (1|raw.data.nona$subset))# abun, diam, mel, sp, dip 
+                          (1|raw.data.nona$block))# ip, dla, ddla
 
 summary(raw.datavarcomp)
 blue = fixef(raw.datavarcomp)  ## get the fixed effects for isolates = BLUEs
@@ -109,7 +111,7 @@ hist(blue) ## vola
 ## now the model with all random effects
 # Linear Model with random effects for variance components
 raw.varcomp.rnd = lmer(raw.data.nona$phenotype~ (1|raw.data.nona$isolate) + 
-#                         (1|raw.data.nona$subset))# abun, diam, mel, sp
+                         (1|raw.data.nona$subset))# abun, diam, mel, sp, dip
                           (1|raw.data.nona$block))# ip, dla
 # Extract variance components
 summary(raw.varcomp.rnd)
@@ -156,8 +158,8 @@ raw.nocontrols.c<-subset(raw.nocontrols.c, plot!= '(all)')
 raw.nocontrols.c<-raw.nocontrols.c[,-(5:8)]
 raw.nocontrols.c<-raw.nocontrols.c[,-(6:10)] #for ip
 head(raw.nocontrols.c)
-blues<-merge(raw.nocontrols.c, blues, by.x='isolate', by.y = "row.names", all=T)
-#blues<-merge(raw.nocontrols, blues, by.x='isolate', by.y = "row.names", all=T)
+#blues<-merge(raw.nocontrols.c, blues, by.x='isolate', by.y = "row.names", all=T)
+blues<-merge(raw.nocontrols, blues, by.x='isolate', by.y = "row.names", all=T)
 
 blues<-droplevels(blues)
 blues$block<-factor(blues$block, c("1","2","3","4", "5","6","7","8","9","10","11","12",
